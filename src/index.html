@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Морской бой на Phaser 3</title>
+    
+    <style>
+        body { margin: 0; padding: 0; }
+        #game-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #player-field, #computer-field {
+            margin: 0 20px;
+        }
+        .status {
+            text-align: center;
+            font-family: Arial;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">Разместите корабли (нажмите "R" для случайного размещения)</div>
+    <div id="game-container">
+        <div id="player-field"></div>
+        <div id="computer-field"></div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

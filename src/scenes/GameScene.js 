@@ -1,0 +1,36 @@
+// Основная игровая сцена
+
+import { Scene } from 'phaser';
+import Grid from '../gameObjects/Grid';
+import GameManager from '../managers/GameManager';
+import AIManager from '../managers/AIManager';
+
+export class GameScene extends Scene {
+    constructor() {
+        super('GameScene');
+    }
+
+    init(data) {
+        this.playerShips = data.playerShips;
+    }
+
+    create() {
+        this.playerGrid = new Grid(this, 100, 100, 'player');
+        this.enemyGrid = new Grid(this, 500, 100, 'enemy');
+        this.gameManager = new GameManager(this, this.playerGrid, this.enemyGrid);
+        this.aiManager = new AIManager(this.enemyGrid);
+
+        this.enemyGrid.setInteractive();
+        this.enemyGrid.on('cellClicked', (x, y) => {
+            this.gameManager.playerTurn(x, y);
+            if (this.gameManager.isGameOver()) {
+                this.scene.start('GameOverScene', { winner: 'player' });
+            } else {
+                this.aiManager.aiTurn();
+                if (this.gameManager.isGameOver()) {
+                    this.scene.start('GameOverScene', { winner: 'ai' });
+                }
+            }
+        });
+    }
+}

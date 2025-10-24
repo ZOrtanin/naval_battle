@@ -1,0 +1,19 @@
+//Загрузка ресурсов
+
+import { Scene } from 'phaser';
+
+export class BootScene extends Scene {
+    constructor() {
+        super('BootScene');
+    }
+
+    preload() {
+        this.load.image('ship1', 'assets/sprites/ship1.png');
+        this.load.audio('shot', 'assets/audio/shot.mp3');
+        // Другие ресурсы
+    }
+
+    create() {
+        this.scene.start('MenuScene');
+    }
+}
