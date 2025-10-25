@@ -23,14 +23,32 @@ export default class NewGameScene extends Phaser.Scene {
 
         this.ships = [];
 
-        const newShip = new ship(this,0,1);
-        this.my_grid.addShips(newShip,0,0);  
 
-        const newShip1 = new ship(this,0,1);
-        this.my_grid.addShips(newShip1,0,0);   
+        const newShip_4 = new ship(this,0,4);
+        this.my_grid.randomAddShips(newShip_4);
+        
+        for (var i = 4 - 1; i >= 0; i--) {
+            const newShip_1 = new ship(this,0,1);
+            this.my_grid.randomAddShips(newShip_1);
+        }
 
-        const newShip2 = new ship(this,0,4);
-        this.my_grid.addShips(newShip2,1,1); 
+        for (var i = 3 - 1; i >= 0; i--) {
+            const newShip_2 = new ship(this,0,2);
+            this.my_grid.randomAddShips(newShip_2);
+        }
+
+        for (var i = 2 - 1; i >= 0; i--) {
+            const newShip_3 = new ship(this,0,3);
+            this.my_grid.randomAddShips(newShip_3);
+        }
+
+        
+
+        // const newShip_1 = new ship(this,0,1);
+        // this.my_grid.addShips(newShip_1,0,0);  
+
+        
+        
 
         this.my_grid.addShipsToGrid();          
 

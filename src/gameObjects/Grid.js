@@ -28,56 +28,123 @@ export default class Grid extends Phaser.GameObjects.Container {
         
     }
 
+    static whatIs() {
+       return '--- Это класс сетки ---';
+    }
+
     create(){
         
+    }
+
+    randomAddShips(ship,x=0,y=0){
+        if(x==0&&y==0){
+            x=Math.floor(Math.random() * (9 - 0 + 1)) + 0;
+            y=Math.floor(Math.random() * (9 - 0 + 1)) + 0;
+        }
+        
+        
+
+        const ran = Math.floor(Math.random() * (1 - 0 + 1)) + 0
+
+        if( ran == 1){
+            ship.orientation = 'vertical';
+        }else{
+            ship.orientation = 'horizontal';
+        }        
+
+        const result = this.addShips(ship,x,y);
+
+        if(!result){
+            // if(ran === 0){
+                this.randomAddShips(ship);
+            // }else{
+                // this.randomAddShips(ship,x,y+1);
+            // }
+            
+        }
     }
 
     addShips(ship,x,y){
 
         // смотрим его координаты 
         // смотрим занятые кординаты
-        // если эти кординаты свободны добовляем корабль
+        
         const cordsShips = this.getCordsShips();
 
         // колличество палуб
         const deks = [];
+        
         for (let i=0; i <= ship.size-1; i++) {
-            deks.push({x:x+i,y:y})
+            if (ship.orientation === 'horizontal'){
+                deks.push({x:x+i,y:y})                
+            }else{
+                deks.push({x:x,y:y+i})
+            }            
         }
 
-        // Проверяем на занятую клетку
-        if(this.chekDeksArray(deks)){            
+        let out_line = deks.some(
+            (deskPoint) => deskPoint.x < 0 || deskPoint.x > 9 || deskPoint.y < 0 || deskPoint.y > 9)
+        if(out_line){
+            return false;
+        }
+
+
+        // если эти кординаты свободны добовляем корабль
+        // Проверяем, на занятую клетку
+        if(this.checkDeskArray(deks)){            
             ship.cord = {x:x, y:y};
             ship.cordDeks = deks;
             this.ships.push(ship);
         
         }else{
             console.log(this.getCordsShips(),'<---- не добавили')
+            return false
         }
         console.log(this.getCordsShips(),'<---- добавили')
-
+        return true
     }
 
-    chekDeksArray(desk){
-        const deks_in_grid = this.getCordsShips();  
-        for (var i = desk.length - 1; i >= 0; i--){
-            for (var j = deks_in_grid.length - 1; j >= 0; j--) {        
-                console.log(deks_in_grid[j],desk[i])
-                if(deks_in_grid[j].x == desk[i].x && deks_in_grid[j].y == desk[i].y){
-                    return false;
+    checkDeskArray(desk) {
+        let deksInGrid = this.getCordsShips();
+        deksInGrid = [...deksInGrid, ...this.getOutlineDesk(deksInGrid) ]
+        return !desk.some(
+            (deskPoint) => deksInGrid.some(
+                (gridPoint) => gridPoint.x === deskPoint.x && gridPoint.y === deskPoint.y
+            )
+        );
+    }
+
+    getOutlineDesk(arr){
+        const mask = [
+                        {x:-1,y:-1},{x:-1,y:0},{x:-1,y:1},
+                        {x:0,y:-1},{x:0,y:0},{x:0,y:1},
+                        {x:1,y:-1},{x:1,y:0},{x:1,y:1}
+                    ];
+
+        let result = [];
+
+        arr.forEach( item => {
+            mask.forEach(point =>{
+                const x = item.x + point.x
+                const y = item.y + point.y
+
+                if(x>-1&&y>-1&&x<10&&y<10){
+                    result.push({x:x,y:y})
                 }
-            }
-        }
-        return true
+
+            });
+        });
+        console.log(result)
+        return result
     }
 
     addShipsToGrid(){
         const desks = this.getCordsShips();
 
         desks.forEach(item =>{
+            console.log(item.x,item.y)
             this.board[item.x][item.y] = 1;
         })
-
     }
 
     render(){
@@ -99,7 +166,6 @@ export default class Grid extends Phaser.GameObjects.Container {
                 
             }
         }
-        
     }
 
     setInteractive() {
@@ -107,16 +173,29 @@ export default class Grid extends Phaser.GameObjects.Container {
     }
 
     getCordsShips() {
-        const cords = []
-        //console.log(this.ships)
-
-        this.ships.forEach( ship => {
-            ship.cordDeks.forEach( deck => {
-                //console.log(item.cordDeks)
-                cords.push(deck);
-            });
-        });
-        //console.log(cords)
-        return cords
+        return this.ships.reduce((acc, ship) => acc.concat(ship.cordDeks), []);
     }
+
+    // old_chekDeksArray(desk){
+    //     const deks_in_grid = this.getCordsShips();  
+    //     for (var i = desk.length - 1; i >= 0; i--){
+    //         for (var j = deks_in_grid.length - 1; j >= 0; j--) {
+    //             if(deks_in_grid[j].x == desk[i].x && deks_in_grid[j].y == desk[i].y){
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true
+    // }
+
+    // getCordsShips() {
+    //     // Получаем все координаты занятых клеток
+    //     const cords = []
+    //     this.ships.forEach( ship => {
+    //         ship.cordDeks.forEach( deck => {                
+    //             cords.push(deck);
+    //         });
+    //     });        
+    //     return cords
+    // }
 }

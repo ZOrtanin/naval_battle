@@ -16,6 +16,10 @@ export default class Ship extends Phaser.GameObjects.Sprite {
         // this.scene.input.setDraggable(this);
     }
 
+    static whatIs() {
+       return '--- Это класс коробля ---';
+      }
+
     create(){
         //console.log('корабыль создан')
         
