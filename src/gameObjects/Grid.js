@@ -32,54 +32,53 @@ export default class Grid extends Phaser.GameObjects.Container {
        return '--- Это класс сетки ---';
     }
 
-    create(){
-        
+    create(){        
+    }      
+
+    getAllCords(){
+        let cords = []
+        this.board.forEach((row,r) =>{
+            row.forEach((col,c) =>{                
+                cords.push({x:c,y:r})
+            });
+        });
+        return cords;
     }
+
+    // -------- корабль
 
     randomAddShips(ship,rec=0,x=0,y=0){
         // рандомное размещение кораблей
 
+        // выбор случайных координат ( для уменьшения числа рекурсий )
         let deksInGrid = this.getCordsShips();
         deksInGrid = [...deksInGrid, ...this.getOutlineDesk(deksInGrid) ]
 
-        let allInGrid = this.getAllCords();
-
-        const emptyInGrid = allInGrid.filter(
+        const emptyInGrid = this.getAllCords().filter(
               (item1) => !deksInGrid.some((item2) => item2.x === item1.x && item2.y === item1.y)
             );
+        
+        const newCords = emptyInGrid[Math.floor(Math.random() * emptyInGrid.length)];
 
-        const lenEmptyCords = emptyInGrid.length;
-        //console.log(lenEmptyCords)
-        const newCords = emptyInGrid[Math.floor(Math.random() * ((lenEmptyCords-1) - 0 + 1)) + 0];
-
-        //console.log(Math.floor(Math.random() * (lenEmptyCords - 0 + 1)) + 0,lenEmptyCords,emptyInGrid)
         x = newCords.x;
         y = newCords.y;
+        
+        // выбор случайного положенеия
+        ship.orientation = 
+            Math.floor(Math.random() * 2) == 1 
+            ? 'horizontal':'vertical';           
 
-        // выбор случайных координат
-        // if(x==0&&y==0){
-        //     x=Math.floor(Math.random() * (9 - 0 + 1)) + 0;
-        //     y=Math.floor(Math.random() * (9 - 0 + 1)) + 0;
-        // }
-
-        const ran = Math.floor(Math.random() * (1 - 0 + 1)) + 0
-
-        if( ran == 1){
-            ship.orientation = 'vertical';
-        }else{
-            ship.orientation = 'horizontal';
-        }        
-
+        // пробуем разместить
         const result = this.addShips(ship,x,y);
 
+        // для анализа рекурсий
         if(!result){
             rec+=1;
             rec+= this.randomAddShips(ship,rec);        
-        }
+        }else{
             //console.log('рекурсия:',rec ,' палубы:',ship.size);
-            // return rec;
-        
-
+            //return rec;
+        }
         return rec;
     }
 
@@ -89,18 +88,18 @@ export default class Grid extends Phaser.GameObjects.Container {
         const cordsShips = this.getCordsShips();
 
         // колличество палуб
-        const deks = [];
+        const deck = [];
         
         for (let i=0; i <= ship.size-1; i++) {
             if (ship.orientation === 'horizontal'){
-                deks.push({x:x+i,y:y})                
+                deck.push({x:x+i,y:y})                
             }else{
-                deks.push({x:x,y:y+i})
+                deck.push({x:x,y:y+i})
             }            
         }
 
         // проверяем выходят кординаты палуб за поле
-        let out_line = deks.some(
+        let out_line = deck.some(
             (deskPoint) => deskPoint.x < 0 || deskPoint.x > 9 || deskPoint.y < 0 || deskPoint.y > 9)
         if(out_line){
             return false;
@@ -108,9 +107,10 @@ export default class Grid extends Phaser.GameObjects.Container {
 
         // если эти кординаты свободны добовляем корабль
         // Проверяем, на занятую клетку
-        if(this.checkDeskArray(deks)){            
+        if(this.checkDeskArray(deck)){            
             ship.cord = {x:x, y:y};
-            ship.cordDeks = deks;
+            ship.cordDeks = deck;
+            ship.addOutLineDeck();
             this.ships.push(ship);
         
         }else{
@@ -123,48 +123,18 @@ export default class Grid extends Phaser.GameObjects.Container {
 
     checkDeskArray(desk) {
         // проверяем пересечение палуб и пространство около них
-        let deksInGrid = this.getCordsShips();
-        deksInGrid = [...deksInGrid, ...this.getOutlineDesk(deksInGrid) ]
+        let deksInGrid = this.getOutlineDesk();
+        //deksInGrid = [...deksInGrid, ...this.getOutlineDesk() ]
         return !desk.some(
             (deskPoint) => deksInGrid.some(
                 (gridPoint) => gridPoint.x === deskPoint.x && gridPoint.y === deskPoint.y
             )
         );
-    }
+    }  
 
-    getOutlineDesk(arr){
-        // получаем пространство около коробля
-        const mask = [
-                        {x:-1,y:-1},{x:-1,y:0},{x:-1,y:1},
-                        {x:0,y:-1},{x:0,y:0},{x:0,y:1},
-                        {x:1,y:-1},{x:1,y:0},{x:1,y:1}
-                    ];
-
-        let result = [];
-
-        arr.forEach( item => {
-            mask.forEach(point =>{
-                const x = item.x + point.x
-                const y = item.y + point.y
-
-                if(x>-1&&y>-1&&x<10&&y<10){
-                    result.push({x:x,y:y})
-                }
-
-            });
-        });
-        
-        return result
-    }
-
-    getAllCords(){
-        let cords = []
-        this.board.forEach((row,r) =>{
-            row.forEach((col,c) =>{                
-                cords.push({x:c,y:r})
-            });
-        });
-        return cords;
+    getOutlineDesk(){
+        // получаем пространство около короблей
+        return this.ships.reduce((acc, ship) => acc.concat(ship.cordOutLine), []);
     }
 
     getCordsShips() {
@@ -180,6 +150,8 @@ export default class Grid extends Phaser.GameObjects.Container {
             this.board[item.x][item.y] = 1;
         })
     }
+
+    // -------- корабль
 
     rebootGrid(){
         // сброс доски

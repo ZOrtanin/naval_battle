@@ -23,10 +23,6 @@ export default class NewGameScene extends Phaser.Scene {
 
         this.ships = [];
 
-        // for (var i = 1000 - 1; i >= 0; i--) {
-        //     this.testAddShip();
-        // }
-
         const newShip_4 = new ship(this,0,4);
         this.my_grid.randomAddShips(newShip_4);
 
@@ -54,6 +50,8 @@ export default class NewGameScene extends Phaser.Scene {
     }
 
     testAddShip(){
+        // проверка на колличество рекурсий при расстановки кораблей
+
         this.my_grid.rebootGrid();
 
         let rec = 0;
@@ -90,9 +88,6 @@ export default class NewGameScene extends Phaser.Scene {
         if(max>30){
             console.log('всего:',rec,' макс:',max);
         }
-        
-
-        
     }
 
     update (){
