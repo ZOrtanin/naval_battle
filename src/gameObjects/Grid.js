@@ -4,6 +4,7 @@ import Phaser from 'phaser';
 export default class Grid extends Phaser.GameObjects.Container {
     constructor(scene, x, y, type) {
         super(scene, x, y);
+        this.scene.add.existing(this);
         //console.log('Grid - загрузилась');
 
         this.scene = scene;
@@ -13,14 +14,18 @@ export default class Grid extends Phaser.GameObjects.Container {
         this.cells = [];
         this.board = Array.from({ length: 10 }, () => Array(10).fill(0));
 
-        this.rect = new Phaser.Geom.Rectangle(100, 100, 40, 40);        
+        this.rect = new Phaser.Geom.Rectangle(0, 0, 40, 40);        
 
         this.graphics = this.scene.add.graphics({ 
-                                lineStyle: { width: 7, color: 0x66777C }, 
+                                lineStyle: { width: 1, color: 0x66777C }, 
                                 fillStyle: { color: 0x66777C }
-                            });        
+                            }); 
+        this.graphics.angle = 45;
+        this.graphics.x = 285;
+        this.graphics.y = 0;
+        this.add(this.graphics); // <-- Добавь эту строку       
         this.ships = [];        
-        this.scene.add.existing(this);
+       
 
         // this.board[1][1] = 1;
         // console.log(this.board)
@@ -85,18 +90,10 @@ export default class Grid extends Phaser.GameObjects.Container {
     addShips(ship,x,y){ 
         // добовляем корабль       
         // смотрим занятые кординаты на поле      
-        const cordsShips = this.getCordsShips();
+        //const cordsShips = this.getCordsShips();
 
-        // колличество палуб
-        const deck = [];
-        
-        for (let i=0; i <= ship.size-1; i++) {
-            if (ship.orientation === 'horizontal'){
-                deck.push({x:x+i,y:y})                
-            }else{
-                deck.push({x:x,y:y+i})
-            }            
-        }
+        // получаем предпологаемые палубы
+        const deck = ship.getDeck(x,y); 
 
         // проверяем выходят кординаты палуб за поле
         let out_line = deck.some(
@@ -107,7 +104,14 @@ export default class Grid extends Phaser.GameObjects.Container {
 
         // если эти кординаты свободны добовляем корабль
         // Проверяем, на занятую клетку
-        if(this.checkDeskArray(deck)){            
+        let newResult = !this.ships.reduce(
+                    (acc, ship) => acc.concat(
+                        ship.checkDeskArray(deck)
+                    ),[]
+                ).includes(false); 
+
+        // если все хорошо добовляем
+        if(newResult){            
             ship.cord = {x:x, y:y};
             ship.cordDeks = deck;
             ship.addOutLineDeck();
@@ -122,14 +126,27 @@ export default class Grid extends Phaser.GameObjects.Container {
     }
 
     checkDeskArray(desk) {
+        // претендент на удаление
+
+        let newResult = !this.ships.reduce(
+                    (acc, ship) => acc.concat(
+                        ship.checkDeskArray(desk)
+                    ),[]
+                ).includes(false);        
+
         // проверяем пересечение палуб и пространство около них
         let deksInGrid = this.getOutlineDesk();
         //deksInGrid = [...deksInGrid, ...this.getOutlineDesk() ]
-        return !desk.some(
+
+        let result = !desk.some(
             (deskPoint) => deksInGrid.some(
                 (gridPoint) => gridPoint.x === deskPoint.x && gridPoint.y === deskPoint.y
             )
         );
+
+        console.log(result,newResult);
+
+        return result;
     }  
 
     getOutlineDesk(){

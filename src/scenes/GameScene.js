@@ -8,9 +8,7 @@ export default class NewGameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene', active: true });
         console.log('GameScene - загрузилась');
-        //this.scene = this;
-
-        
+        console.log(this);        
     }
 
     preload() { 
@@ -19,9 +17,14 @@ export default class NewGameScene extends Phaser.Scene {
 
     create() {
         
-        this.my_grid = new grid(this,100,100,'big');
+
+        this.my_grid = new grid(this,150,80,'big');        
+        this.my_grid.scaleY = 0.7;
 
         this.ships = [];
+
+        // const newShip_5 = new ship(this,0,5);
+        // this.my_grid.randomAddShips(newShip_5);
 
         const newShip_4 = new ship(this,0,4);
         this.my_grid.randomAddShips(newShip_4);
