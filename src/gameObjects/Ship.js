@@ -31,6 +31,44 @@ export default class Ship extends Phaser.GameObjects.Sprite {
         this.cordDeks = cord;
     }
 
+    addShips(grid,x,y){ 
+        // добовляем корабль       
+        // смотрим занятые кординаты на поле      
+        //const cordsShips = this.getCordsShips();
+
+        // получаем предпологаемые палубы
+        const deck = this.getDeck(x,y); 
+
+        // проверяем выходят кординаты палуб за поле
+        let out_line = deck.some(
+            (deskPoint) => deskPoint.x < 0 || deskPoint.x > 9 || deskPoint.y < 0 || deskPoint.y > 9)
+        if(out_line){
+            return false;
+        }
+
+        // если эти кординаты свободны добовляем корабль
+        // Проверяем, на занятую клетку
+        let newResult = !grid.ships.reduce(
+                    (acc, ship) => acc.concat(
+                        this.checkDeskArray(deck)
+                    ),[]
+                ).includes(false); 
+
+        // если все хорошо добовляем
+        if(newResult){            
+            this.cord = {x:x, y:y};
+            this.cordDeks = deck;
+            this.addOutLineDeck();
+            grid.ships.push(this);
+        
+        }else{
+            //console.log('не добавили')
+            return false
+        }
+        //console.log('добавили')
+        return true
+    }
+
     getDeck(x,y){
         // получаем предпологаемые палубы
         const deck = [];

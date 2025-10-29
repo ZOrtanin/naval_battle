@@ -74,7 +74,8 @@ export default class Grid extends Phaser.GameObjects.Container {
             ? 'horizontal':'vertical';           
 
         // пробуем разместить
-        const result = this.addShips(ship,x,y);
+        //const result = this.addShips(ship,x,y);
+        const result = ship.addShips(this,x,y);
 
         // для анализа рекурсий
         if(!result){
@@ -167,6 +168,8 @@ export default class Grid extends Phaser.GameObjects.Container {
             this.board[item.x][item.y] = 1;
         })
     }
+
+
 
     // -------- корабль
 
