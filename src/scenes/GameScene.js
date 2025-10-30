@@ -28,12 +28,12 @@ export default class NewGameScene extends Phaser.Scene {
 
         const newShip_4 = new ship(this,0,1);
         this.my_grid.randomAddShips(newShip_4);
-        console.log(newShip_4.cordOutLine,'4')
+        console.log(this.my_grid.getOutlineDesk())
 
         for (var i = 4 - 1; i >= 0; i--) {
             const newShip_1 = new ship(this,0,1);
             this.my_grid.randomAddShips(newShip_1);
-            console.log(newShip_1.cordOutLine,'1') // <---- странно тоже 36
+            console.log(this.my_grid.getOutlineDesk()) // <---- странно тоже 36
         }
         
 
