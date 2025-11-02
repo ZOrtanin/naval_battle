@@ -26,7 +26,7 @@ export default class NewGameScene extends Phaser.Scene {
         // const newShip_5 = new ship(this,0,5);
         // this.my_grid.randomAddShips(newShip_5);
 
-        const newShip_4 = new ship(this,0,1);
+        const newShip_4 = new ship(this,0,4);
         this.my_grid.randomAddShips(newShip_4);
         console.log(this.my_grid.getOutlineDesk())
 
@@ -37,15 +37,15 @@ export default class NewGameScene extends Phaser.Scene {
         }
         
 
-        // for (var i = 3 - 1; i >= 0; i--) {
-        //     const newShip_2 = new ship(this,0,2);
-        //     this.my_grid.randomAddShips(newShip_2);
-        // }
+        for (var i = 3 - 1; i >= 0; i--) {
+            const newShip_2 = new ship(this,0,2);
+            this.my_grid.randomAddShips(newShip_2);
+        }
 
-        // for (var i = 2 - 1; i >= 0; i--) {
-        //     const newShip_3 = new ship(this,0,3);
-        //     this.my_grid.randomAddShips(newShip_3);
-        // }
+        for (var i = 2 - 1; i >= 0; i--) {
+            const newShip_3 = new ship(this,0,3);
+            this.my_grid.randomAddShips(newShip_3);
+        }
         
 
         

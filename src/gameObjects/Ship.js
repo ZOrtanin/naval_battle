@@ -49,8 +49,8 @@ export default class Ship extends Phaser.GameObjects.Sprite {
         // если эти кординаты свободны добовляем корабль
         // Проверяем, на занятую клетку
         let newResult = !grid.ships.reduce(
-                    (acc, ship) => acc.concat(
-                        this.checkDeskArray(deck)
+                    (acc, ship_in_grid) => acc.concat(
+                        ship_in_grid.checkDeskArray(deck)
                     ),[]
                 ).includes(false); 
 
@@ -83,7 +83,8 @@ export default class Ship extends Phaser.GameObjects.Sprite {
         return deck;
     }
 
-    checkDeskArray(desk) {
+    checkDeskArray(desk,ship) {
+        console.log(ship)
         // проверяем пересечение палуб и пространство около них
         let deksInGrid = this.cordOutLine;
         //deksInGrid = [...deksInGrid, ...this.getOutlineDesk() ]
