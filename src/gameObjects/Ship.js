@@ -31,7 +31,7 @@ export default class Ship extends Phaser.GameObjects.Sprite {
         this.cordDeks = cord;
     }
 
-    addShips(grid,x,y){ 
+    addShip(grid,x,y){ 
         // добовляем корабль       
         // смотрим занятые кординаты на поле      
         //const cordsShips = this.getCordsShips();

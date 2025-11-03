@@ -8,6 +8,9 @@ export default class Grid extends Phaser.GameObjects.Container {
         //console.log('Grid - загрузилась');
 
         this.scene = scene;
+        this.name = 'new_grid';
+        this.role = 'Enemy'        
+        this.visible = true;
         this.cords = {x:x,y:y}
         this.type = type;
 
@@ -52,7 +55,7 @@ export default class Grid extends Phaser.GameObjects.Container {
 
     // -------- корабль
 
-    randomAddShips(ship,rec=0,x=0,y=0){
+    randomAddShip(ship,rec=0,x=0,y=0){
         // рандомное размещение кораблей
 
         // выбор случайных координат ( для уменьшения числа рекурсий )
@@ -74,81 +77,19 @@ export default class Grid extends Phaser.GameObjects.Container {
             ? 'horizontal':'vertical';           
 
         // пробуем разместить
-        //const result = this.addShips(ship,x,y);
-        const result = ship.addShips(this,x,y);
+        // const result = this.addShips(ship,x,y);
+        const result = ship.addShip(this,x,y);
 
         // для анализа рекурсий
         if(!result){
             rec+=1;
-            rec+= this.randomAddShips(ship,rec);        
+            rec+= this.randomAddShip(ship,rec);        
         }else{
             //console.log('рекурсия:',rec ,' палубы:',ship.size);
             //return rec;
         }
         return rec;
     }
-
-    addShips(ship,x,y){ 
-        // добовляем корабль       
-        // смотрим занятые кординаты на поле      
-        //const cordsShips = this.getCordsShips();
-
-        // получаем предпологаемые палубы
-        const deck = ship.getDeck(x,y); 
-
-        // проверяем выходят кординаты палуб за поле
-        let out_line = deck.some(
-            (deskPoint) => deskPoint.x < 0 || deskPoint.x > 9 || deskPoint.y < 0 || deskPoint.y > 9)
-        if(out_line){
-            return false;
-        }
-
-        // если эти кординаты свободны добовляем корабль
-        // Проверяем, на занятую клетку
-        let newResult = !this.ships.reduce(
-                    (acc, ship) => acc.concat(
-                        ship.checkDeskArray(deck)
-                    ),[]
-                ).includes(false); 
-
-        // если все хорошо добовляем
-        if(newResult){            
-            ship.cord = {x:x, y:y};
-            ship.cordDeks = deck;
-            ship.addOutLineDeck();
-            this.ships.push(ship);
-        
-        }else{
-            //console.log('не добавили')
-            return false
-        }
-        //console.log('добавили')
-        return true
-    }
-
-    checkDeskArray(desk) {
-        // претендент на удаление
-
-        let newResult = !this.ships.reduce(
-                    (acc, ship) => acc.concat(
-                        ship.checkDeskArray(desk)
-                    ),[]
-                ).includes(false);        
-
-        // проверяем пересечение палуб и пространство около них
-        let deksInGrid = this.getOutlineDesk();
-        //deksInGrid = [...deksInGrid, ...this.getOutlineDesk() ]
-
-        let result = !desk.some(
-            (deskPoint) => deksInGrid.some(
-                (gridPoint) => gridPoint.x === deskPoint.x && gridPoint.y === deskPoint.y
-            )
-        );
-
-        console.log(result,newResult);
-
-        return result;
-    }  
 
     getOutlineDesk(){
         // получаем пространство около короблей
@@ -169,8 +110,6 @@ export default class Grid extends Phaser.GameObjects.Container {
         })
     }
 
-
-
     // -------- корабль
 
     rebootGrid(){
@@ -180,19 +119,30 @@ export default class Grid extends Phaser.GameObjects.Container {
     }
 
     render(){
+        if(this.type == 'big'){
+            this.size_cell = 40
+        }
+        if(this.type == 'small'){
+            this.size_cell = 25
+            this.rect = new Phaser.Geom.Rectangle(0, 0, 25, 25);
+        }
         
         //console.log(this.board[1][1])  
         this.graphics.clear();     
 
         for (let i = 0; i < 10; i++) {            
             for (let j = 0; j < 10; j++) {
-                this.rect.x = 40*i + this.cords.x;
-                this.rect.y = 40*j + this.cords.y;
+                this.rect.x = this.size_cell*i + this.cords.x;
+                this.rect.y = this.size_cell*j + this.cords.y;
 
                 if(this.board[i][j] == 0 ){
                     this.graphics.strokeRectShape(this.rect);
-                }else{
+                }
+
+                if(this.board[i][j] == 1 && this.role == 'Player'){
                     this.graphics.fillRectShape(this.rect);
+                }else{
+                    this.graphics.strokeRectShape(this.rect);
                 }
                 
                 
@@ -204,26 +154,88 @@ export default class Grid extends Phaser.GameObjects.Container {
         this.cells.forEach(row => row.forEach(cell => cell.setInteractive()));
     }
 
+    // addShips(ship,x,y){ 
+        //     // добовляем корабль       
+        //     // смотрим занятые кординаты на поле      
+        //     //const cordsShips = this.getCordsShips();
+
+        //     // получаем предпологаемые палубы
+        //     const deck = ship.getDeck(x,y); 
+
+        //     // проверяем выходят кординаты палуб за поле
+        //     let out_line = deck.some(
+        //         (deskPoint) => deskPoint.x < 0 || deskPoint.x > 9 || deskPoint.y < 0 || deskPoint.y > 9)
+        //     if(out_line){
+        //         return false;
+        //     }
+
+        //     // если эти кординаты свободны добовляем корабль
+        //     // Проверяем, на занятую клетку
+        //     let newResult = !this.ships.reduce(
+        //                 (acc, ship) => acc.concat(
+        //                     ship.checkDeskArray(deck)
+        //                 ),[]
+        //             ).includes(false); 
+
+        //     // если все хорошо добовляем
+        //     if(newResult){            
+        //         ship.cord = {x:x, y:y};
+        //         ship.cordDeks = deck;
+        //         ship.addOutLineDeck();
+        //         this.ships.push(ship);
+            
+        //     }else{
+        //         //console.log('не добавили')
+        //         return false
+        //     }
+        //     //console.log('добавили')
+        //     return true
+        // }
+
+    // checkDeskArray(desk) {
+        //     // претендент на удаление
+
+        //     let newResult = !this.ships.reduce(
+        //                 (acc, ship) => acc.concat(
+        //                     ship.checkDeskArray(desk)
+        //                 ),[]
+        //             ).includes(false);        
+
+        //     // проверяем пересечение палуб и пространство около них
+        //     let deksInGrid = this.getOutlineDesk();
+        //     //deksInGrid = [...deksInGrid, ...this.getOutlineDesk() ]
+
+        //     let result = !desk.some(
+        //         (deskPoint) => deksInGrid.some(
+        //             (gridPoint) => gridPoint.x === deskPoint.x && gridPoint.y === deskPoint.y
+        //         )
+        //     );
+
+        //     console.log(result,newResult);
+
+        //     return result;
+        // }  
+
     // old_chekDeksArray(desk){
-    //     const deks_in_grid = this.getCordsShips();  
-    //     for (var i = desk.length - 1; i >= 0; i--){
-    //         for (var j = deks_in_grid.length - 1; j >= 0; j--) {
-    //             if(deks_in_grid[j].x == desk[i].x && deks_in_grid[j].y == desk[i].y){
-    //                 return false;
-    //             }
-    //         }
-    //     }
-    //     return true
-    // }
+        //     const deks_in_grid = this.getCordsShips();  
+        //     for (var i = desk.length - 1; i >= 0; i--){
+        //         for (var j = deks_in_grid.length - 1; j >= 0; j--) {
+        //             if(deks_in_grid[j].x == desk[i].x && deks_in_grid[j].y == desk[i].y){
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        //     return true
+        // }
 
     // getCordsShips() {
-    //     // Получаем все координаты занятых клеток
-    //     const cords = []
-    //     this.ships.forEach( ship => {
-    //         ship.cordDeks.forEach( deck => {                
-    //             cords.push(deck);
-    //         });
-    //     });        
-    //     return cords
-    // }
+        //     // Получаем все координаты занятых клеток
+        //     const cords = []
+        //     this.ships.forEach( ship => {
+        //         ship.cordDeks.forEach( deck => {                
+        //             cords.push(deck);
+        //         });
+        //     });        
+        //     return cords
+        // }
 }

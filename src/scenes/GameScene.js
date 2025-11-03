@@ -18,41 +18,51 @@ export default class NewGameScene extends Phaser.Scene {
     create() {
         
 
-        this.my_grid = new grid(this,150,80,'big');        
+        this.my_grid = new grid(this,0,0,'small');
+        this.my_grid.role = 'Player'        
         this.my_grid.scaleY = 0.7;
 
-        this.ships = [];
+        this.enemy_grid = new grid(this,150,80,'big');
+        this.enemy_grid.scaleY = 0.7;
 
+        this.randomEnemyBord(this.my_grid);
+        this.randomEnemyBord(this.enemy_grid);
+
+
+        // this.ships = [];
         // const newShip_5 = new ship(this,0,5);
         // this.my_grid.randomAddShips(newShip_5);
 
+        
+        
+
+        this.my_grid.addShipsToGrid();
+        this.enemy_grid.addShipsToGrid();          
+
+        console.log(this.my_grid)  
+    
+    }
+
+    randomEnemyBord(board){
         const newShip_4 = new ship(this,0,4);
-        this.my_grid.randomAddShips(newShip_4);
-        console.log(this.my_grid.getOutlineDesk())
+        board.randomAddShip(newShip_4);
+        console.log(board.getOutlineDesk())
 
         for (var i = 4 - 1; i >= 0; i--) {
             const newShip_1 = new ship(this,0,1);
-            this.my_grid.randomAddShips(newShip_1);
-            console.log(this.my_grid.getOutlineDesk()) // <---- странно тоже 36
-        }
-        
+            board.randomAddShip(newShip_1);
+            console.log(board.getOutlineDesk()) // <---- странно тоже 36
+        }        
 
         for (var i = 3 - 1; i >= 0; i--) {
             const newShip_2 = new ship(this,0,2);
-            this.my_grid.randomAddShips(newShip_2);
+            board.randomAddShip(newShip_2);
         }
 
         for (var i = 2 - 1; i >= 0; i--) {
             const newShip_3 = new ship(this,0,3);
-            this.my_grid.randomAddShips(newShip_3);
+            board.randomAddShip(newShip_3);
         }
-        
-
-        
-        this.my_grid.addShipsToGrid();          
-
-        console.log(this.my_grid)  
-    
     }
 
     testAddShip(){
@@ -65,28 +75,28 @@ export default class NewGameScene extends Phaser.Scene {
         let result = 0;
 
         const newShip_4 = new ship(this,0,4);
-        result = this.my_grid.randomAddShips(newShip_4);
+        result = this.my_grid.randomAddShip(newShip_4);
         max = result > max ? result : max;
         rec += result;
 
 
         for (var i = 2 - 1; i >= 0; i--) {
             const newShip_3 = new ship(this,0,3);
-            result = this.my_grid.randomAddShips(newShip_3);
+            result = this.my_grid.randomAddShip(newShip_3);
             max = result > max ? result : max;
             rec += result;
         }
 
         for (var i = 3 - 1; i >= 0; i--) {
             const newShip_2 = new ship(this,0,2);
-            result = this.my_grid.randomAddShips(newShip_2);
+            result = this.my_grid.randomAddShip(newShip_2);
             max = result > max ? result : max;
             rec += result;
         }
 
         for (var i = 4 - 1; i >= 0; i--) {
             const newShip_1 = new ship(this,0,1);
-            result = this.my_grid.randomAddShips(newShip_1);
+            result = this.my_grid.randomAddShip(newShip_1);
             max = result > max ? result : max;
             rec += result;
         }
@@ -98,5 +108,6 @@ export default class NewGameScene extends Phaser.Scene {
 
     update (){
         this.my_grid.render(); 
+        this.enemy_grid.render();
     }
 }
