@@ -1,7 +1,8 @@
 
 import { Scene } from 'phaser';
-import grid from '../gameObjects/Grid'
-import ship from '../gameObjects/Ship'
+import grid from '../gameObjects/Grid';
+import ship from '../gameObjects/Ship';
+import GameManager from '../managers/GameManager';
 
 export default class NewGameScene extends Phaser.Scene {
     
@@ -18,14 +19,17 @@ export default class NewGameScene extends Phaser.Scene {
     create() {
         
 
-        this.my_grid = new grid(this,0,0,'small');
-        this.my_grid.role = 'Player'        
-        this.my_grid.scaleY = 0.7;
+
+        this.player_grid = new grid(this,0,0,'small');
+        this.player_grid.role = 'Player'        
+        this.player_grid.scaleY = 0.7;
 
         this.enemy_grid = new grid(this,150,80,'big');
         this.enemy_grid.scaleY = 0.7;
 
-        this.randomEnemyBord(this.my_grid);
+        this.manager = new GameManager(this,this.player_grid,this.enemy_grid)
+
+        this.randomEnemyBord(this.player_grid);
         this.randomEnemyBord(this.enemy_grid);
 
 
@@ -36,10 +40,10 @@ export default class NewGameScene extends Phaser.Scene {
         
         
 
-        this.my_grid.addShipsToGrid();
+        this.player_grid.addShipsToGrid();
         this.enemy_grid.addShipsToGrid();          
 
-        console.log(this.my_grid)  
+        console.log(this.player_grid)  
     
     }
 
@@ -107,7 +111,7 @@ export default class NewGameScene extends Phaser.Scene {
     }
 
     update (){
-        this.my_grid.render(); 
+        this.player_grid.render(); 
         this.enemy_grid.render();
     }
 }
