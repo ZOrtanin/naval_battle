@@ -41,9 +41,10 @@ export default class NewGameScene extends Phaser.Scene {
         
 
         this.player_grid.addShipsToGrid();
-        this.enemy_grid.addShipsToGrid();          
+        this.enemy_grid.addShipsToGrid();
+        this.gameControl(this.player_grid);          
 
-        console.log(this.player_grid)  
+        console.log(this.input)  
     
     }
 
@@ -110,8 +111,14 @@ export default class NewGameScene extends Phaser.Scene {
         }
     }
 
+    gameControl(object){
+        
+    }
+
     update (){
         this.player_grid.render(); 
         this.enemy_grid.render();
+
+        //console.log(pointer)
     }
 }

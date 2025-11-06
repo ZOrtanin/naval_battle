@@ -17,7 +17,9 @@ export default class Grid extends Phaser.GameObjects.Container {
         this.cells = [];
         this.board = Array.from({ length: 10 }, () => Array(10).fill(0));
 
-        this.rect = new Phaser.Geom.Rectangle(0, 0, 40, 40);        
+        this.rect = new Phaser.Geom.Rectangle(0, 0, 40, 40);   
+
+        this.createControll()
 
         this.graphics = this.scene.add.graphics({ 
                                 lineStyle: { width: 1, color: 0x66777C }, 
@@ -32,6 +34,7 @@ export default class Grid extends Phaser.GameObjects.Container {
 
         // this.board[1][1] = 1;
         // console.log(this.board)
+        this.create();
         
         
     }
@@ -40,7 +43,8 @@ export default class Grid extends Phaser.GameObjects.Container {
        return '--- Это класс сетки ---';
     }
 
-    create(){        
+    create(){  
+         
     }      
 
     getAllCords(){
@@ -148,7 +152,46 @@ export default class Grid extends Phaser.GameObjects.Container {
                 
             }
         }
-    }    
+    }   
+
+    createControll(){
+        console.log('котроль в работе')
+        if(this.type == 'big'){
+            this.size_cell = 40
+        }
+        if(this.type == 'small'){
+            this.size_cell = 25
+            this.rect = new Phaser.Geom.Rectangle(0, 0, 25, 25);
+        }
+        
+         
+        
+
+        for (let i = 0; i < 10; i++) {            
+            for (let j = 0; j < 10; j++) {
+                this.rect.x = this.size_cell*i + this.cords.x;
+                this.rect.y = this.size_cell*j + this.cords.y;
+
+                this.graphics = this.scene.add.graphics({ 
+                                lineStyle: { width: 1, color: 0x00777C }, 
+                                fillStyle: { color: 0x00777C }
+                            }); 
+                this.graphics.setInteractive(new Phaser.Geom.Rectangle(40, 40, this.rect.x, this.rect.y), Phaser.Geom.Rectangle.Contains);
+
+                this.graphics.on('pointerdown', (pointer, x, y, event) => {
+                    console.log(`Клик по спрайту на координатах: X=${i}, Y=${j}`);
+                });
+                
+                
+            }
+        }
+
+        this.graphics.angle = 45;
+        this.graphics.x = 285;
+        this.graphics.y = 0;
+        this.add(this.graphics);
+        
+    } 
 
     setInteractive() {
         this.cells.forEach(row => row.forEach(cell => cell.setInteractive()));
