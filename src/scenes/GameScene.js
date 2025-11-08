@@ -26,6 +26,7 @@ export default class NewGameScene extends Phaser.Scene {
 
         this.enemy_grid = new grid(this,150,80,'big');
         this.enemy_grid.scaleY = 0.7;
+        this.enemy_grid.createControll();
 
         this.manager = new GameManager(this,this.player_grid,this.enemy_grid)
 
