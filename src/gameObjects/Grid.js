@@ -1,5 +1,5 @@
-// Класс игровой сетки
 import Phaser from 'phaser';
+import { Cell } from './Cell';
 
 export default class Grid extends Phaser.GameObjects.Container {
     constructor(scene, x, y, type) {
@@ -17,28 +17,17 @@ export default class Grid extends Phaser.GameObjects.Container {
         this.cells = [];
         this.board = Array.from({ length: 10 }, () => Array(10).fill(0));
 
-        this.rect = new Phaser.Geom.Rectangle(0, 0, 40, 40);   
+        this.ships = [];
 
-        
+        // Создаем внутренний контейнер для ячеек
+        this.gridContainer = this.scene.add.container(0, 0);
+        this.add(this.gridContainer);
 
-        this.graphics = this.scene.add.graphics({ 
-                                lineStyle: { width: 1, color: 0x66777C }, 
-                                fillStyle: { color: 0x66777C }
-                            }); 
-        this.graphics.angle = 45;
-        this.graphics.x = 285;
-        this.graphics.y = 0;
-        this.add(this.graphics); // <-- Добавь эту строку       
-        this.ships = [];   
 
-             
-       
-
-        // this.board[1][1] = 1;
-        // console.log(this.board)
         this.create();
-        
-        
+
+        // Поворачиваем внутренний контейнер
+        this.gridContainer.angle = 45;
     }
 
     static whatIs() {
@@ -46,7 +35,14 @@ export default class Grid extends Phaser.GameObjects.Container {
     }
 
     create(){  
-         
+        for (let i = 0; i < 10; i++) {
+            this.cells[i] = [];
+            for (let j = 0; j < 10; j++) {
+                const cell = new Cell(this.scene, i, j);
+                this.gridContainer.add(cell); // Добавляем ячейку во внутренний контейнер
+                this.cells[i][j] = cell;
+            }
+        }
     }      
 
     getAllCords(){
@@ -124,84 +120,9 @@ export default class Grid extends Phaser.GameObjects.Container {
         this.ships = []; 
     }
 
-    render(){
-        // if(this.type == 'big'){
-        //     this.size_cell = 40
-        // }
-        // if(this.type == 'small'){
-        //     this.size_cell = 25
-        //     this.rect = new Phaser.Geom.Rectangle(0, 0, 25, 25);
-        // }
-        
-        // //console.log(this.board[1][1])  
-        // this.graphics.clear();     
-
-        // for (let i = 0; i < 10; i++) {            
-        //     for (let j = 0; j < 10; j++) {
-        //         this.rect.x = this.size_cell*i + this.cords.x;
-        //         this.rect.y = this.size_cell*j + this.cords.y;
-
-        //         if(this.board[i][j] == 0 ){
-        //             this.graphics.strokeRectShape(this.rect);
-        //         }
-
-        //         if(this.board[i][j] == 1 && this.role == 'Player'){
-        //             this.graphics.fillRectShape(this.rect);
-        //         }else{
-        //             this.graphics.strokeRectShape(this.rect);
-        //         }
-                
-                
-        //     }
-        // }
-    }   
-
-    createControll(){
-        console.log('котроль в работе')
-        // if(this.type == 'big'){
-        //     this.size_cell = 40
-        // }
-        // if(this.type == 'small'){
-        //     this.size_cell = 25
-        //     this.rect = new Phaser.Geom.Rectangle(0, 0, 25, 25);
-        // }
-        this.size_cell = 40
-
-        for (let i = 0; i < 10; i++) {            
-            for (let j = 0; j < 10; j++) {
-                const x = this.size_cell*i + this.cords.x;
-                const y = this.size_cell*j + this.cords.y;
-                console.log(x,y)
-
-                this.my_conroll = this.scene.add.graphics({ 
-                                lineStyle: { width: 1, color: 0x00777C }, 
-                                fillStyle: { color: 0x00777C }
-                            }); 
-
-                this.my_rect = new Phaser.Geom.Rectangle(40, 40, x, y)                
-                this.my_conroll.strokeRectShape(this.my_rect);
-
-
-                //this.my_conroll.setInteractive(this.my_rect, Phaser.Geom.Rectangle.Contains);
-                this.my_conroll.on('pointerdown', (pointer, x, y, event) => {
-                    console.log(`Клик по спрайту на координатах: X=${i}, Y=${j}`);
-                });
-
-                // this.my_conroll.angle = 45;
-                // this.my_conroll.x = 285;
-                // this.my_conroll.y = 0;
-                this.add(this.my_conroll);
-                
-                
-            }
-        }
-
-        
-        
-    } 
-
     setInteractive() {
-        this.cells.forEach(row => row.forEach(cell => cell.setInteractive()));
+        console.log(this.cells)
+        //this.cells.forEach(row => row.forEach(cell => cell.setInteractive()));
     }
 
     // addShips(ship,x,y){ 

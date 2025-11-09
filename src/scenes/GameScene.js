@@ -20,13 +20,13 @@ export default class NewGameScene extends Phaser.Scene {
         
 
 
-        this.player_grid = new grid(this,0,0,'small');
+        this.player_grid = new grid(this,250,50,'small');
         this.player_grid.role = 'Player'        
         this.player_grid.scaleY = 0.7;
 
-        this.enemy_grid = new grid(this,150,80,'big');
+        this.enemy_grid = new grid(this,550,200,'big');
         this.enemy_grid.scaleY = 0.7;
-        this.enemy_grid.createControll();
+        //this.enemy_grid.createControll();
 
         this.manager = new GameManager(this,this.player_grid,this.enemy_grid)
 
@@ -117,8 +117,8 @@ export default class NewGameScene extends Phaser.Scene {
     }
 
     update (){
-        this.player_grid.render(); 
-        this.enemy_grid.render();
+        //this.player_grid.setInteractive(); 
+        //this.enemy_grid.render();
 
         //console.log(pointer)
     }
