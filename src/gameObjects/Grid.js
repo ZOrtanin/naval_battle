@@ -38,7 +38,13 @@ export default class Grid extends Phaser.GameObjects.Container {
         for (let i = 0; i < 10; i++) {
             this.cells[i] = [];
             for (let j = 0; j < 10; j++) {
-                const cell = new Cell(this.scene, i, j);
+                let cell;
+                if(this.type == 'big'){
+                    cell = new Cell(this.scene, i, j, 32, 'cell_full', 'cell_empty');
+                }else{
+                    cell = new Cell(this.scene, i, j, 10, 'cell_full_small', 'cell_empty_small');
+                }
+                
                 this.gridContainer.add(cell); // Добавляем ячейку во внутренний контейнер
                 this.cells[i][j] = cell;
             }
