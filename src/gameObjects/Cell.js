@@ -11,8 +11,16 @@ export class Cell extends Phaser.GameObjects.Sprite {
         
         this.on('pointerdown', (pointer, x, y, event) => {
             console.log(`Клик по спрайту на координатах: X=${this.gridX}, Y=${this.gridY}`);
-            console.log(this.texture)
-            this.setTexture(full)
+
+            // let board = this.parentContainer.parentContainer;
+            // if(board.checkShot(this.gridX, this.gridY)){
+            //     this.updateState('hit');
+            // }else{
+            //     this.updateState('miss');
+            // }
+
+            this.scene.events.emit('cell-clicked', this);
+            
         });
 
     }

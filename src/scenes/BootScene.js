@@ -17,6 +17,7 @@ export default class BootScene extends Scene {
         const arr_texture_gen = [
             {name:'cell_empty',size:32,full:0},
             {name:'cell_full',size:32,full:1},
+            {name:'hit',size:32,full:1},
             {name:'cell_empty_small',size:10,full:0},
             {name:'cell_full_small',size:10,full:1},
         ];
@@ -40,13 +41,13 @@ export default class BootScene extends Scene {
         });
 
 
-        // const graphics = this.add.graphics();
-        // graphics.fillStyle(0xffffff);
-        // graphics.lineStyle(1, 0x808080);
-        // graphics.fillRect(0, 0, 32, 32);
-        // graphics.strokeRect(0, 0, 32, 32);
-        // graphics.generateTexture('cell_empty', 32, 32);
-        // graphics.destroy();
+        const graphics = this.add.graphics();
+        graphics.fillStyle(0x808080);
+        graphics.lineStyle(20, 0xffffff);
+        graphics.fillRect(0, 0, 32, 32);
+        graphics.strokeRect(0, 0, 32, 32);
+        graphics.generateTexture('miss', 32, 32);
+        graphics.destroy();
 
         // const graphics_new = this.add.graphics();
         // graphics_new.fillStyle(0x808080);

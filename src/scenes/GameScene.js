@@ -46,6 +46,13 @@ export default class NewGameScene extends Phaser.Scene {
         this.gameControl(this.player_grid);          
 
         console.log(this.input)  
+
+        // начинаем слушатиь что нам говорят клетки
+        this.events.on('cell-clicked', (cell) => {    
+            console.log(`Кликнули по клетке ${cell.gridX}, ${cell.gridY}`);
+            this.manager.handleShot(cell,cell.gridX,cell.gridY);
+            
+        });
     
     }
 

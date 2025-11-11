@@ -9,6 +9,16 @@ export default class GameManager {
         this.currentTurn = 'player';
     }
 
+    handleShot(cell, x, y){
+        console.log()
+        if(this.enemyGrid.checkShot(x, y)){
+            cell.updateState('hit');
+        }else{
+            cell.updateState('miss');
+        }
+    }
+            
+
     // playerTurn(x, y) {
     //     if (this.currentTurn !== 'player') return;
     //     const cell = this.enemyGrid.cells[x][y];

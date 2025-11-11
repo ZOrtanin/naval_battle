@@ -49,6 +49,8 @@ export default class Grid extends Phaser.GameObjects.Container {
                 this.cells[i][j] = cell;
             }
         }
+
+        
     }      
 
     getAllCords(){
@@ -59,6 +61,16 @@ export default class Grid extends Phaser.GameObjects.Container {
             });
         });
         return cords;
+    }
+
+    checkShot(x, y){
+        // проверка на попадание вызывается из клетки
+        if(this.board[x][y]==1){
+            return true
+        }else{
+            return false
+        }
+        
     }
 
     // -------- корабль
