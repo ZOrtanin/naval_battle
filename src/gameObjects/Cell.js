@@ -5,7 +5,7 @@ export class Cell extends Phaser.GameObjects.Sprite {
         super(scene, x * size, y * size, empty);
         this.gridX = x;
         this.gridY = y;
-        this.state = 'empty';
+        this.state = 'empty'; //
         this.setInteractive();
         //this.on('pointerdown', () => this.scene.events.emit('cellClicked', this.gridX, this.gridY));
         
